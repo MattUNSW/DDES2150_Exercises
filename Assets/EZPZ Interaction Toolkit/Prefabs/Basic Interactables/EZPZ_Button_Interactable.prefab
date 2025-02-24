@@ -486,7 +486,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pulseTime: 0.25
-  scaleFactor: {x: 0.05, y: 0.05, z: 0.05}
+  scaleFactor: {x: 0.03, y: 0.03, z: 0.03}
   scaleAdd: {x: 0, y: 0, z: 0}
   pulseOnStart: 0
   startDelay: 2
