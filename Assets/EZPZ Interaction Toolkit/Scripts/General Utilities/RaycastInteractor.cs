@@ -5,6 +5,7 @@
 using StarterAssets;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Serialization.Formatters;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -30,6 +31,7 @@ public class RaycastInteractor : MonoBehaviour
     public InteractableGeneral prevHitSubject;
     public InteractableGeneral hitSubject;
     public Movable moveSubject;
+    public Movable prevMoveSubject;
     public Typable typeSubject;
     public bool interactState = false;
     public bool prevInteractState = false;
@@ -60,13 +62,6 @@ public class RaycastInteractor : MonoBehaviour
             {
                 hitIndicatorRenderer.enabled = true;
             }
-
-            /*
-            if (environmentHit.transform.localScale.x != 1 || environmentHit.transform.localScale.y != 1 || environmentHit.transform.localScale.z != 1)
-            {
-                Debug.LogError("!!!!! ALERT !!!!!" + environmentHit.name + " SCALE IS NOT (1,1,1). This will cause object pickup & drop problems. Reset scale to (1,1,1)");
-            }
-            */
         }
 
         if (myPlayerInput == null)
@@ -103,7 +98,11 @@ public class RaycastInteractor : MonoBehaviour
 
             if (mainCam != null)
             {
-                Camera[] allCams = FindObjectsOfType<Camera>();
+
+                
+
+                Camera[] allCams = FindObjectsByType<Camera>(FindObjectsSortMode.None);
+
 
                 if (allCams.Length > 1)
                 {
@@ -123,7 +122,7 @@ public class RaycastInteractor : MonoBehaviour
     {
         if (myEventSystem != null)
         {
-            EventSystem[] allEventSystems = FindObjectsOfType<EventSystem>();
+            EventSystem[] allEventSystems = FindObjectsByType<EventSystem>(FindObjectsSortMode.None);
 
             if (allEventSystems.Length > 1)
             {
@@ -200,8 +199,9 @@ public class RaycastInteractor : MonoBehaviour
         hitSubject = hit.collider.gameObject.GetComponent<InteractableGeneral>();
 
         if (hitSubject != null)
-        {
+        {   
             subject = hitSubject;
+            
             OnClickableHover();
 
             if (subject != prevHitSubject)
@@ -233,6 +233,7 @@ public class RaycastInteractor : MonoBehaviour
 
     void HandleMovables(InteractableGeneral hitSubject)
     {
+
         moveSubject = hitSubject.GetComponent<Movable>();
 
         if (moveSubject != null)
@@ -241,7 +242,6 @@ public class RaycastInteractor : MonoBehaviour
             {
                 //Pick up objects
                 moveSubject.Grab(this);
-
                 previousMoveParent = moveSubject.transform.parent;
                 moveSubject.moving = true;
 
@@ -319,6 +319,7 @@ public class RaycastInteractor : MonoBehaviour
                 moveSubject.transform.parent = null;
                 previousMoveParent = null;
                 */
+
                 DropMovable();
             }
         }
@@ -346,6 +347,11 @@ public class RaycastInteractor : MonoBehaviour
                     Vector3 direction = moveSubject.transform.position - rayPointer.position;
                     subjectRbody.AddForce(moveSubject.throwForce * direction * 100);
                 }
+            }
+
+            if(moveSubject.myMagnetSnapper != null)
+            {
+                moveSubject.myMagnetSnapper.ReleaseSubject();
             }
 
             //moveSubject.transform.parent = previousMoveParent;
@@ -472,16 +478,5 @@ public class RaycastInteractor : MonoBehaviour
                 hitIndicatorRenderer.enabled = false;
             }
         }
-    }
-
-
-    public void OnRestart()
-    {
-        SceneManager.LoadScene(0);
-    }
-
-    public void OnQuit()
-    {
-        Application.Quit();
     }
 }

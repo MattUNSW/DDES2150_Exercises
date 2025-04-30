@@ -100,18 +100,14 @@ public class Movable : InteractableGeneral
         Debug.Log("MOVABLE - RESET ALL");
     }
 
-   
-
 
     public void Grab(RaycastInteractor newManipulator)
     {
         myRayManipulator = newManipulator;
-
     }
     
     public void Drop()
     {
-
         onDrop.Invoke();
     }
 
@@ -126,6 +122,13 @@ public class Movable : InteractableGeneral
             myRayManipulator.moveSubject = null;
             myRayManipulator = null;
         }
+
+        if(myMagnetSnapper != null)
+        {
+            myMagnetSnapper.subject = null;
+            myMagnetSnapper = null;
+        }
+
         
         SetColliderIsTrigger(this, false);        
 
@@ -135,6 +138,8 @@ public class Movable : InteractableGeneral
             myRbody.isKinematic = false;
             myRbody.useGravity = true;
         }
+
+        Drop();
     }
 
     public static void SetColliderIsTrigger(Movable m, bool setting)
