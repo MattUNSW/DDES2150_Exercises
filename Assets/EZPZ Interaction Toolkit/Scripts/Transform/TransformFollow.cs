@@ -1,3 +1,7 @@
+//EZPZ Interaction Toolkit
+//by Matt Cabanag
+//Created - don't remember when, some time in 2022-2023
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,6 +10,7 @@ public class TransformFollow : MonoBehaviour
 {
     public Transform subject;
     public float positionSyncRate = 3;
+    public Vector3 offset;
 
     public Quaternion startRotation;
     public float yRotation;
@@ -29,7 +34,7 @@ public class TransformFollow : MonoBehaviour
     public void SyncPosGradual()
     {
         if(subject != null)
-            transform.position = Vector3.Lerp(transform.position, subject.position, positionSyncRate * Time.deltaTime);
+            transform.position = Vector3.Lerp(transform.position, subject.position + offset, positionSyncRate * Time.deltaTime);
     }
 
     public void SyncYRotation()
